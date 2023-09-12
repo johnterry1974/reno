@@ -1,0 +1,36 @@
+name: Cross-Platform Build and Test
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-20.04, ubuntu-22.04, ubuntu-20.04,ubuntu-22.04, ubuntu-20.04, ubuntu-22.04, ubuntu-20.04,ubuntu-22.04, ubuntu-20.04,ubuntu-22.04, ubuntu-20.04, ubuntu-22.04, ubuntu-20.04,ubuntu-22.04, ubuntu-20.04, ubuntu-22.04, ubuntu-20.04, ubuntu-22.04, ubuntu-20.04]
+        
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Record Start Time
+        run: |
+          echo "Run Start Time: $(date)" >> run_info.log
+          echo "Runner OS: ${{ matrix.os }}" >> run_info.log
+
+      - name: Run target Milvus
+        run: |
+          docker pull milvusdb/milvus:v2.3.0
+
+      - name: Record End Time
+        run: |
+          echo "Run End Time: $(date)" >> run_info.log
+
+      - name: Display Log
+        run: cat run_info.log
